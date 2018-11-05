@@ -1,8 +1,9 @@
 Fortran 90 and later best practices
 
-1. Use IMPLICIT NONE to help prevent typos in variable names from turning into mysteries
-2. Everything except the PROGRAM unit should be in modules to enable automatic argument checking.
-3. Design your modules as an infrastructure layer with definitions and utilities, and an  application layer
+1. Use the .f90 file name extension and free format (! for comment and & for continuation on the next line)
+2. Use IMPLICIT NONE to help prevent typos in variable names from turning into mysteries
+3. Everything except the PROGRAM unit should be in modules to enable automatic argument checking.
+4. Design your modules as an infrastructure layer with definitions and utilities, and an  application layer
 5. Use make to organize the build: 
 - objects that create modules should be prerequisites to compilations that use the modules - modules need to be compiled first
 - separate the compilation of .f90 files into .o files and linking of .o files into executables
