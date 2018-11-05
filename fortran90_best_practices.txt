@@ -1,0 +1,20 @@
+Fortran 90 and later best practices
+
+1. Use IMPLICIT NONE to help prevent typos in variable names from turning into mysteries
+2. Everything except the PROGRAM unit should be in modules to enable automatic argument checking.
+3. Design your modules as an infrastructure layer with definitions and utilities, and an  application layer
+5. Use make to organize the build: 
+- objects that create modules should be prerequisites to compilations that use the modules - modules need to be compiled first
+- separate the compilation of .f90 files into .o files and linking of .o files into executables
+- executables should be named with the extension .exe
+- define compiler and flags by macros
+6. Use fortran90 style declarations and intent(in) or (out)
+7. Declare arrays with bounds known only at run time as POINTER and ALLOCATE them
+8. If you declare array arguments with DIMENSION (:) or (:,:), they will carry with them information about their bounds. This is called “assumed shape”. Warning: subroutines are free to make local copies of assumed shape arrays. This is a consideration in parallel computing. 
+9. Arrays declared with FORTRAN 77-style bounds like (1:n) are not “assumed shape”. The variables in the bounds may be constant - declared like PARAMETER (n=6) - or passed to the subroutine. Compiler support for using expressions in array bounds may vary.
+10. Fortran standard is not freely available. A good source of information are compiler language reference manuals.  It is best to use only standard language features and not vendor extension.
+
+Examples:
+https://github.com/openwfm/wrf-fire/tree/master/standalone
+https://github.com/janmandel/fortran90_test
+
