@@ -5,9 +5,8 @@
   integer:: level, levels
   parameter(levels=5)
   real:: x,xx
-
-! *** executable ***  
   type(mg), dimension(levels) :: p
+! *** executable ***  
   do level=1,levels
      allocate(p(level)%u_h(10,10))
   enddo
