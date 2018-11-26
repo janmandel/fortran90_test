@@ -1,5 +1,6 @@
 program project
 ! skeleton of a  2d laplace iteration on rectangular domain to demonstrate MPI 
+! incomplete - as a guidance to writing your own only
 ! Jan Mandel, November 26, 2018
 
 use mpi
@@ -11,7 +12,7 @@ call work(.....)
 
 end program project
 
-subroutine work(its,ite,jts,jte,ims,ime,jms,jme)
+subroutine work(ib,jb,k,its,ite,jts,jte,ims,ime,jms,jme)
 
 integer:: its,ite,jts,jte     ! starting and ending indices of the submatrix I am updating
 integer:: ims,ime,jms,jme     ! starting and ending indices of the submatrix I have in memory - at least by 1 larger on each side
