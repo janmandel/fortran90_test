@@ -14,7 +14,7 @@ end program project
 subroutine work(its,ite,jts,jte,ims,ime,jms,jme)
 
 integer:: its,ite,jts,jte     ! starting and ending indices of the submatrix I am updating
-integer:: ims,ime,jms,jme     ! starting and ending indices of the submatrix I am have in memory - at least by 1 larger on each side
+integer:: ims,ime,jms,jme     ! starting and ending indices of the submatrix I have in memory - at least by 1 larger on each side
 
 double precision, dimension(ims:ime,jms:jme):: u,f,v ! dynamic memory allocation
 
@@ -39,7 +39,7 @@ print *,ib,jb
 !    if jb<N then send u(its:ite,jte+1) to subdomain ib,jb+1 on processor k+M
 ! x: if jb=1 then assume that u(its:ite,jts-1) has boundary values - set them first!
 ! y: do not need to worry about corner because I have only 5 point difference scheme
-! z: 
+! z: etc.
 
 !                  jts                jte
 !               y zzzzzzzzzzzzzzzzzzzzzzzz 
@@ -49,9 +49,6 @@ print *,ib,jb
 !               x |                      |
 !         ite   x |----------------------|
 
-! receive u(its-1,jts+1:jte+1) etc.
-
-! need to send to neighbors too
 
 
 
