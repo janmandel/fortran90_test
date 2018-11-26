@@ -5,6 +5,7 @@ program project
 
 use mpi
 ! who am I? what is my k
+! if I am master, read domain size from a file and broadcast to everyone
 ! compute my ib,jb,its,ite,jts,jte
 
 ! set ims,ime,jms,jme
@@ -67,6 +68,9 @@ do j=jts,jte
         u(i,j) = u(i,j)
     enddo
 enddo
+
+! compute also the error (residual, or the change in one iteration)
+! add up the errors over subdomains and print the result
 
 ! end iteration loop here
 
