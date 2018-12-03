@@ -4,14 +4,68 @@ program project
 ! Jan Mandel, November 26, 2018
 
 use mpi
-! who am I? what is my k
-! if I am master, read domain size from a file and broadcast to everyone
-! compute my ib,jb,its,ite,jts,jte
+
+integer:: taskid, numtasks, ierr, M, N, ids,ide,jds,jde
+
+ids = 1
+ide =1000
+jds = 1
+jde = 1100
+! who am I? what is my 
+
+
+
+ call MPI_COMM_RANK(MPI_COMM_WORLD, taskid, ierr)
+ call MPI_COMM_SIZE(MPI_COMM_WORLD, numtasks, ierr)
+! find the largest integer N such that N^2 <= numtasks
+ N = floor(sqrt(double(numtasks)))
+ M = N
+
+print *,'task ',taskid,' domain ',ids,':',ide,' ',jds,':',jde,' tasks ',numtask, &
+  ' proc grid ',M,' by ',N
+ ib = 1+taskid/M
+! M=5 taskid = 0: => jb = 1+(0)/5 = 1 + 0 = 1
+! M=5 taskid = 4: => jb = 1+(4)/5 = 1 + 0 = 1
+! M=5 taskid = 5: => jb = 1+(5)/5 = 1 + 1 = 2
+jb = 1+mod(taskid,M)
+
 
 ! set ims,ime,jms,jme
+ims = its-1
+ime = ite+1
+jms = jts-1
+jme = jte+1
+
+! have ids:ide jds:jde = domain dimensions
+! compute isize, jsize = tile size in directions i and j
+! number of points in i direction divided by number of domains in i direction
+isize = divideup(ide-ids+1, M)
+jsize = divideup(jde-jds+1, N)
+
+! compute my ib,jb,its,ite,jts,jte
+its = ids + isize*(ib-1)
+jts = jds + jsize*(jb-1)
+! ib =1   its = 1
+! ib =2   its = 1 + isize
+ite = min(ide,ids - 1 + isize*ib)
+! ib =1 ids=1 :  ide = isize 
+jte = min(jde,jds - 1 + jsize*jb)
+
+print *,'task ',taskid,' block ',ib,jb, ' tile ', its,':',ite,' ',jts,':',jte
+
+
 call work(.....)
 
 end program project
+
+integer function divideup(m,n)
+! return m/n rounded up
+! divideup = ceil(real(m)/real(n))
+divideup = (m+n-1)/n
+! m =n : (m + n -1)/n = (2*n-1)/n = 1
+! m =n+1 : (m + n -1)/n = (n+1 + n-1)/n = (2n)/n = 2
+end function divideup
+
 
 subroutine work(ib,jb,k,its,ite,jts,jte,ims,ime,jms,jme)
 
@@ -22,18 +76,21 @@ double precision, dimension(ims:ime,jms:jme):: u,f,v ! dynamic memory allocation
 
 !  assign subdomains to processors in M by N grid
 
+!                         jb  ->
 !                   1               N 
 !        1       |----------------------|
 !                | 1    M+1             | 
-!                | 2    M+2             | 
-!                |                      |
+!   ib |         | 2    M+2             | 
+!      v         |                      |
 !                | M    M+M  ....   M*N |
 !        M       |-----------------------
 
 
 print *,ib,jb
 ! I am subdomain ib,jb on processor k
-
+! I am respondible for updating the array u with the solution for i = its:ite and j=jts:jte
+! my arrays are dimensioned as ims:ime, jms:jme 
+!
 ! initialize u,f
 ! do the following in iteration loop
 
@@ -45,12 +102,13 @@ print *,ib,jb
 
 !                  jts                jte
 !               y zzzzzzzzzzzzzzzzzzzzzzzz 
-!         its   x |----------------------|
-! ib,jb-1       x |        ib,jb         | 
+!         its   x |----------------------|----------------
+! ib,jb-1       x |        ib,jb         |  ij, jb+1
 !               x |                      |
 !               x |                      |
-!         ite   x |----------------------|
-
+!         ite   x |----------------------|----------------
+!                 |                      |
+!                 |       ib+1, jb
 
 
 
